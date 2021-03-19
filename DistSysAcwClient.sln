@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistSysAcwClient", "DistSysAcwClient.csproj", "{519A806E-7F8C-4A91-BEDF-9A6F0A5CE93B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{519A806E-7F8C-4A91-BEDF-9A6F0A5CE93B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519A806E-7F8C-4A91-BEDF-9A6F0A5CE93B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519A806E-7F8C-4A91-BEDF-9A6F0A5CE93B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519A806E-7F8C-4A91-BEDF-9A6F0A5CE93B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14C0B85F-1959-4B77-A113-7FCA8DFE63CD}
+	EndGlobalSection
+EndGlobal
