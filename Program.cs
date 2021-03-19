@@ -9,9 +9,6 @@ namespace DistSysAcwClient
 
         private static string request = "";
 
-        public static string ApiKey { get; set; }
-        public static string username { get; set; }
-
        
         static void Initialise()
         {
