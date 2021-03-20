@@ -19,6 +19,8 @@ namespace DistSysAcwClient
         public static string ApiKey { get; set; }
         public static string mUsername { get; set; }
 
+        public static string mPublicKey { get; set; }
+
         public clientViewModel()
         {
             // default constructor 
@@ -46,7 +48,7 @@ namespace DistSysAcwClient
                     var splitedValue = "";
                     splitedValue = args[1];
 
-
+                    // Task 10 query 1 and 6
                     switch (requestValues)
                     {
                         case "TalkBack Hello":
@@ -61,7 +63,7 @@ namespace DistSysAcwClient
                                 break;
                     }
                 }
-           
+                    // Task 10 query 2
                 else if (args.Length == 3)
                 {
                     var endpoint = "integers=";
@@ -88,6 +90,7 @@ namespace DistSysAcwClient
                         Sort(endpoint).Wait();
                     }
 
+                    // Task 10 query 3
                    else if (args[0].Contains("User") && args[1].Equals("Get"))
                     {
                         Console.WriteLine("…please wait…");
@@ -98,7 +101,7 @@ namespace DistSysAcwClient
                         }
                     }
 
-
+                    // Task 10 query 4
                    else if (args[0].Contains("User") && args[1].Equals("Post"))
                     {
                         Console.WriteLine("…please wait…");
@@ -113,7 +116,27 @@ namespace DistSysAcwClient
 
                     }
 
-                    else if(args[0].Equals("Protected") && args[2].Equals("Hello"))
+                    // task 10 query 8
+                    else if (args[0].Equals("Protected") && args[1].Equals("SHA1") && args[2].Equals("Hello"))
+                    {
+                        Console.WriteLine("…please wait…");
+                        string apiKey = GetApiKey();
+
+                        if (string.IsNullOrWhiteSpace(apiKey))
+                        {
+                            Console.WriteLine("You need to do a User Post or User Set first.");
+                        }
+
+                        else
+                        {
+                            string requestMessage = args[2];
+                            ProtectedRequestSha1(apiKey, requestMessage).Wait();
+                        }
+
+                    }
+
+                    // Task 10 Query 9
+                    else if(args[0].Equals("Protected") && args[1].Equals("SHA256") && args[2].Equals("Hello"))
                     {
                         Console.WriteLine("…please wait…");
                         string apiKey = GetApiKey();
@@ -131,6 +154,49 @@ namespace DistSysAcwClient
 
                     }
 
+                    // Task 10 Query 10
+                    else if (args[0].Equals("Protected") && args[1].Equals("Get") && args[2].Equals("PublicKey"))
+                    {
+                        Console.WriteLine("…please wait…");
+
+                        string apiKey = GetApiKey();
+
+                        if (string.IsNullOrWhiteSpace(apiKey))
+                        {
+                            Console.WriteLine("You need to do a User Post or User Set first.");
+                        }
+
+                        else
+                        {
+                            
+                            PublicKey(apiKey).Wait();
+                        }
+
+                    }
+
+                    else if (args[0].Equals("Protected") && args[1].Equals("Sign") && args[2].Equals("Hello"))
+                    {
+                        Console.WriteLine("…please wait…");
+                        string apiKey = GetApiKey();
+                        string publicKey = GetPublicKey();
+
+                        if (string.IsNullOrWhiteSpace(apiKey))
+                        {
+                            Console.WriteLine("You need to do a User Post or User Set first.");
+                        }
+
+                        if (String.IsNullOrWhiteSpace(publicKey))
+                        {
+                            Console.WriteLine("Client doesn’t yet have the public key");
+                        }
+
+                        else
+                        {
+                            string requestMessage = args[2];
+                            ProtectedSignInRequest(apiKey, requestMessage).Wait();
+                        }
+                    }
+
                     else
                     {
                         Console.WriteLine("Unknown Command with three arguments passed");
@@ -138,7 +204,8 @@ namespace DistSysAcwClient
                     
                 }
 
-               else  if (args.Length == 4)
+                // Task 10 Query 5
+                else if (args.Length == 4)
                 {
                     if (args[0].Equals("User") && args[1].Equals("Set"))
                     {
@@ -148,7 +215,8 @@ namespace DistSysAcwClient
                         Console.WriteLine("Stored");
                     }
 
-                   else if (args[0].Equals("User") && args[1].Equals("Role") && args[3].Equals("Admin"))
+                    // Task 10 Query 7
+                    else if (args[0].Equals("User") && args[1].Equals("Role") && args[3].Equals("Admin"))
                     {
                         Console.WriteLine("…please wait…");
                         string apiKey = GetApiKey();
@@ -195,6 +263,18 @@ namespace DistSysAcwClient
         {
             ApiKey = pApiKey;
         }
+
+        static void SetPublicKey(string pPublicKey)
+        {
+            mPublicKey = pPublicKey;
+        }
+
+        static string GetPublicKey()
+        {
+            return mPublicKey;
+        }
+
+
         static string GetApiKey()
         {
             return ApiKey;
@@ -346,6 +426,86 @@ namespace DistSysAcwClient
            }
            
         }
+
+       static async Task ProtectedSignInRequest(string apiKey, string requestMessage)
+       {
+           if (mClient.DefaultRequestHeaders.Contains("ApiKey"))
+           {
+               // remove the apikey from the header 
+               mClient.DefaultRequestHeaders.Clear();
+
+           }
+
+           // add the api key to the header request
+           mClient.DefaultRequestHeaders.Add("ApiKey", apiKey);
+
+           var httpResponseMessage = mClient.GetAsync("protected/sign?message=" + requestMessage);
+
+           var response = await httpResponseMessage.Result.Content.ReadAsStringAsync();
+
+           if (httpResponseMessage.Result.IsSuccessStatusCode)
+           {
+               Console.WriteLine(response);
+           }
+           else
+           {
+               Console.WriteLine(response);
+           }
+        }
+
+       static async Task ProtectedRequestSha1(string apiKey, string requestMessage)
+       {
+           if (mClient.DefaultRequestHeaders.Contains("ApiKey"))
+           {
+               // remove the apikey from the header 
+               mClient.DefaultRequestHeaders.Clear();
+
+           }
+           // add the api key to the header request
+           mClient.DefaultRequestHeaders.Add("ApiKey", apiKey);
+
+           var httpResponseMessage = mClient.GetAsync("protected/sha1?message=" + requestMessage);
+
+           var response = await httpResponseMessage.Result.Content.ReadAsStringAsync();
+
+           if (httpResponseMessage.Result.IsSuccessStatusCode)
+           {
+               Console.WriteLine(response);
+           }
+           else
+           {
+               Console.WriteLine(response);
+           }
+
+        }
+
+        static async Task PublicKey(string apiKey)
+       {
+           if (mClient.DefaultRequestHeaders.Contains("ApiKey"))
+           {
+               // remove the apikey from the header 
+               mClient.DefaultRequestHeaders.Clear();
+
+           }
+           // add the api key to the header request
+           mClient.DefaultRequestHeaders.Add("ApiKey", apiKey);
+
+           var httpResponseMessage = mClient.GetAsync("protected/getpublickey");
+
+           var response = await httpResponseMessage.Result.Content.ReadAsStringAsync();
+
+           if (httpResponseMessage.Result.IsSuccessStatusCode)
+           {
+               SetPublicKey(response);
+               Console.WriteLine("Got Public Key");
+           }
+           else
+           {
+               Console.WriteLine("Couldn’t Get the Public Key");
+           }
+        }
+
+      
 
         static void RunInit()
        {
