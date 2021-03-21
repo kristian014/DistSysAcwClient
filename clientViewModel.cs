@@ -59,7 +59,11 @@ namespace DistSysAcwClient
                             Console.WriteLine("…please wait…");
                             DeleteUser().Wait();
                             break;
-                            default:Console.WriteLine("Unknown Command passed");
+                        case "Protected Hello":
+                            Console.WriteLine("…please wait…");
+                            ProtectedHello().Wait();
+                            break;
+                        default:Console.WriteLine("Unknown Command passed");
                                 break;
                     }
                 }
@@ -399,6 +403,41 @@ namespace DistSysAcwClient
                Console.WriteLine(result);
            }
 
+        }
+
+       static async Task ProtectedHello()
+       {
+           string apiKey = GetApiKey();
+
+           if (string.IsNullOrWhiteSpace(apiKey))
+           {
+               Console.WriteLine("You need to do a User Post or User Set first.");
+           }
+           else
+           {
+               if (mClient.DefaultRequestHeaders.Contains("ApiKey"))
+               {
+                   // remove the apikey from the header 
+                   mClient.DefaultRequestHeaders.Clear();
+
+               }
+               // add the api key to the header request
+               mClient.DefaultRequestHeaders.Add("ApiKey", apiKey);
+               var httpResponseMessage = mClient.GetAsync("protected/hello");
+
+               var response = await httpResponseMessage.Result.Content.ReadAsStringAsync();
+
+               if (httpResponseMessage.Result.IsSuccessStatusCode)
+               {
+                   Console.WriteLine(response);
+               }
+               else
+               {
+                   Console.WriteLine(response);
+               }
+
+
+            }
         }
 
        static async Task ProtectedRequest(string apiKey, string requestMessage)
